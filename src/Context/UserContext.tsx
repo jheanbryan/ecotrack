@@ -9,7 +9,7 @@ type UserType = {
   setAuthTime: (newState: number) => void;
   setExp: (newState: number) => void;
   setName: (newState: string) => void;
-  setEmail: (newState: string) => void;
+  setEmailUser: (newState: string) => void;
   setPhotoURL: (newState: string) => void;
   isSessionValid: () => boolean;
 };
@@ -25,7 +25,7 @@ const initialValue: UserType = {
   setAuthTime: () => {},
   setExp: () => {},
   setName: () => {},
-  setEmail: () => {},
+  setEmailUser: () => {},
   setPhotoURL: () => {},
   isSessionValid: () => false,
 };
@@ -40,7 +40,7 @@ export const UserContextProvider = ({ children }: UserContextProps) => {
   const [authTime, setAuthTime] = useState(initialValue.authTime);
   const [exp, setExp] = useState(initialValue.exp);
   const [name, setName] = useState(initialValue.name);
-  const [email, setEmail] = useState(initialValue.email);
+  const [email, setEmailUser] = useState(initialValue.email);
   const [photoURL, setPhotoURL] = useState(initialValue.photoURL);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export const UserContextProvider = ({ children }: UserContextProps) => {
         setAuthTime,
         setExp,
         setName,
-        setEmail,
+        setEmailUser,
         setPhotoURL,
         isSessionValid: () => {
           const timestamp = new Date().getTime();

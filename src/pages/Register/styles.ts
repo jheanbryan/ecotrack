@@ -23,13 +23,6 @@ export const FlexCollCenter = styled.div`
     align-items: center;
     width: 100%;
     gap: 0.5rem;
-
-    form{
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        gap: 10px;
-    }
 `;
 
 export const DivImg = styled.div`
@@ -69,6 +62,7 @@ export const DivInput = styled.div`
     border-radius: 8px;
     padding: 10px;
     background-color: ${colors.gray};
+    position: relative;
 `;
 
 export const Input = styled.input`
@@ -79,29 +73,21 @@ export const Input = styled.input`
     color: ${colors.dark};
     padding-left: 1.8rem;
 `;
+
 export const InputIcon = styled.img`
     position: absolute;
     width: 1.5rem;
-`;
-
-export const ForgotPassword = styled.span`
-    color: ${colors.primary};
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.3s;
-    text-align: right;
-
-    &:hover {
-        text-decoration: underline;
-    }
+    left: 10px;
 `;
 
 export const IconEye = styled.img`
     position: absolute;
     width: 1.5rem;
-    right: 40px;
+    right: 10px;
     cursor: pointer;
 `;
+
+
 
 export const Button = styled.button`
     width: 100%;
@@ -114,7 +100,7 @@ export const Button = styled.button`
     border-radius: 8px;
     cursor: pointer;
     transition: 0.3s;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
 
     &:hover {
         background: ${colors.dark};
@@ -135,5 +121,23 @@ export const SocialIcon = styled.img`
 
     &:hover {
         transform: scale(1.1);
+    }
+`;
+
+export const LoginRedirect = styled.div`
+    font-size: 14px;
+    color: ${colors.dark};
+
+    a {
+        color: ${colors.primary};
+        text-decoration: none;
+        font-weight: bold;
+        margin-left: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    a:hover {
+        text-decoration: underline;
     }
 `;

@@ -3,10 +3,10 @@ export const colors = {
     secondary: "#66BB6A", 
     tertiary: "#4FC3F7", 
     backgroundLight: "#F5F5DC",
-    backgroundConstrast: "#fff",
+    backgroundContrast: "#fff",
     backgroundDark: "#121212",
-    textLight: "#FFFFFF", 
-    textDark: "#333333", 
-    menuText: "#333333", 
+    light: "#FFFFFF", 
+    dark: "#333333", 
+    gray: "#F0F0F0" 
   };
   

@@ -3,7 +3,8 @@ import Home from "../pages/Home";
 import Login from "../pages/Login/index";
 import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../components/ProtectedRoute";
-
+import UserProfile from "../pages/Profile";
+import Register from "../pages/Register";
 
 export const routes: RouteObject[] = [
   {
@@ -20,9 +21,17 @@ export const routes: RouteObject[] = [
   },
   {
     path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/profile",
     element: (
       <ProtectedRoute>
-        <Login />
+        <UserProfile />
       </ProtectedRoute>
     ),
   },
