@@ -1,42 +1,103 @@
-import { Card, CardUserProfile, ConsumptionContainer, ContainerCardsConsumption, DivImg, Img, InputsContainer, MainContainer } from "./styles";
-import userImage from '../../assets/jotaro.png'
+import { useEffect, useState } from "react";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { auth, store } from "../../Config/firebase";
+import { 
+  Card, 
+  CardUserProfile, 
+  ConsumptionContainer, 
+  ContainerCardsConsumption, 
+  DivImg, 
+  Img, 
+  InputsContainer, 
+  MainContainer 
+} from "./styles";
+import userImage from '../../assets/jotaro.png';
 import Header from "../../components/Header";
 
 const UserProfile = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [cep, setCep] = useState("");
+  const [address, setAddress] = useState("");
+  const [photo, setPhoto] = useState(userImage);
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const currentUser = auth.currentUser;
+
+      if (currentUser) {
+        const userRef = doc(store, "users", currentUser.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          setName(userData.name || "");
+          setEmail(userData.email || currentUser.email);
+          setCep(userData.cep || "");
+          setAddress(userData.address || "");
+          setPhoto(userData.photo || userImage);
+        } else {
+          console.log("Usuário não encontrado!");
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleSave = async () => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const userRef = doc(store, "users", currentUser.uid);
+      try {
+        await updateDoc(userRef, {
+          name,
+          cep,
+          address,
+        });
+        alert("Dados atualizados com sucesso!");
+        setIsEditing(false);
+      } catch (error) {
+        console.error("Erro ao atualizar os dados: ", error);
+      }
+    }
+  };
 
   return (
     <>
-    <Header />
-    <MainContainer>
+      <Header />
+      <MainContainer>
         <CardUserProfile>
           <h3>Perfil de usuário</h3>
 
-            <DivImg>
-                <Img src={userImage} alt="Imagem do usuario" />
-            </DivImg>
+          <DivImg>
+            <Img src={photo} alt="Imagem do usuário" />
+          </DivImg>
 
+          <InputsContainer>
+            <label>Nome:</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} readOnly={!isEditing} />
 
-            <InputsContainer>
-                <label htmlFor="">Nome:</label>
-                <input type="text" placeholder="Nome"/>
+            <label>Email:</label>
+            <input type="email" value={email} readOnly />
 
-                <label htmlFor="">Email:</label>
-                <input type="email" placeholder="Email"/>
+            <label>CEP:</label>
+            <input type="text" value={cep} onChange={(e) => setCep(e.target.value)} readOnly={!isEditing} />
 
-                <label htmlFor="">CEP:</label>
-                <input type="text" placeholder="Cep"/>
+            <label>Endereço:</label>
+            <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} readOnly={!isEditing} />
 
-                <label htmlFor="">Endereço:</label>
-                <input type="text" placeholder="Endereço"/>
-
-                <button>Salvar</button>
-            </InputsContainer>
+            {isEditing ? (
+              <button onClick={handleSave}>Salvar</button>
+            ) : (
+              <button onClick={() => setIsEditing(true)}>Editar</button>
+            )}
+          </InputsContainer>
         </CardUserProfile>
-
 
         <ConsumptionContainer>
           <h3>Consumos</h3>
-
           <button>Novo Consumo</button>
 
           <ContainerCardsConsumption>
@@ -48,9 +109,9 @@ const UserProfile = () => {
             </Card>
           </ContainerCardsConsumption>
         </ConsumptionContainer>
-    </MainContainer>
+      </MainContainer>
     </>
-  )
+  );
 };
 
 export default UserProfile;

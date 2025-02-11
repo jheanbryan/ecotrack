@@ -20,9 +20,12 @@ const mockData = [
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-
+  const [username, setUserName] = useState('');
+  
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+    console.log(currentUser?.displayName)
+    setUserName(currentUser?.displayName || 'Usuário');
       if (!currentUser) {
         navigate("/");
       }
@@ -30,12 +33,11 @@ const Dashboard = () => {
     return () => unsubscribe();
   }, [navigate]);
 
-
   return (
     <>
     <Header />
     <MainContainer>
-      <Title>Bem-vindo, {user || "Usuário"}!</Title>
+      <Title>Bem-vindo, {username}!</Title>
       
       <FlexRow>
         <DashboardCard>

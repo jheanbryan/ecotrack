@@ -5,6 +5,7 @@ import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../components/ProtectedRoute";
 import UserProfile from "../pages/Profile";
 import Register from "../pages/Register";
+import Logout from "../pages/Logout";
 
 export const routes: RouteObject[] = [
   {
@@ -32,6 +33,14 @@ export const routes: RouteObject[] = [
     element: (
       <ProtectedRoute>
         <UserProfile />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/logout",
+    element: (
+      <ProtectedRoute>
+        <Logout />
       </ProtectedRoute>
     ),
   },

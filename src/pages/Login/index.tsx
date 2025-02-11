@@ -51,7 +51,7 @@ const Login = () => {
       console.log(result)
       if (result && result.user) {
         const currentUser = result.user;
-        
+        console.log(currentUser)
         const tokenResult = await currentUser.getIdTokenResult();
         
         setAuthTime(new Date(tokenResult.authTime).getTime());

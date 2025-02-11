@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../../Config/firebase";
+import { auth, store } from "../../Config/firebase";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import {
   Button,
   DivDescription,
@@ -28,6 +30,7 @@ import closedEyeIcon from '../../assets/icons/closedEye.png';
 import openEyeIcon from '../../assets/icons/openEye.png';
 
 const Register = () => {
+  const [name, setName] = useState(''); // Estado para armazenar o nome
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -38,23 +41,43 @@ const Register = () => {
     loading,
   ] = useCreateUserWithEmailAndPassword(auth);
 
-  const handleSignOut = async(e: any) => {
+  const handleSignUp = async (e: any) => {
+    e.preventDefault();
     try {
-      e.preventDefault()
-      await createUserWithEmailAndPassword(email, password);
+      const userCredential = await createUserWithEmailAndPassword(email, password);
+  
+      if (!userCredential || !userCredential.user) {
+        console.error("Erro: Usuário não foi criado.");
+        return;
+      }
+  
+      const user = userCredential.user;
+  
+      await updateProfile(user, { displayName: name });
+  
+      await setDoc(doc(store, "users", user.uid), {
+        uid: user.uid,
+        name: name,
+        email: email,
+        cep: null,
+        address: null,
+        photo: null,
+        consumption: {},
+        createdAt: new Date(),
+      });
+  
       navigate("/home");
-
     } catch (error) {
       console.error("Erro ao criar conta:", error);
     }
   };
+  
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
-  if (loading) 
-    return <p>Carregando...</p>;
+  if (loading) return <p>Carregando...</p>;
 
   return (
     <MainContainer>
@@ -74,13 +97,25 @@ const Register = () => {
       <FlexCollCenter>
         <Label htmlFor="name">Nome</Label>
         <DivInput>
-          <Input type="text" placeholder="Nome" name="name" required />
+          <Input 
+            type="text" 
+            placeholder="Nome" 
+            name="name" 
+            required 
+            onChange={e => setName(e.target.value)} 
+          />
           <InputIcon src={userIcon} alt="User Icon" />
         </DivInput>
 
         <Label htmlFor="email">Email</Label>
         <DivInput>
-          <Input type="email" placeholder="Email" name="email" required onChange={e => setEmail(e.target.value)} />
+          <Input 
+            type="email" 
+            placeholder="Email" 
+            name="email" 
+            required 
+            onChange={e => setEmail(e.target.value)} 
+          />
           <InputIcon src={emailIcon} alt="Email Icon" />
         </DivInput>
 
@@ -102,7 +137,7 @@ const Register = () => {
           />
         </DivInput>
 
-        <Button onClick={handleSignOut}>Cadastrar</Button>
+        <Button onClick={handleSignUp}>Cadastrar</Button>
       </FlexCollCenter>
 
       <FlexCollCenter>

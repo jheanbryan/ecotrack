@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { colors } from '../../styles/colors';
+import { Link } from 'react-router-dom';
 
 interface DropdownMenuProps {
     isOpen: boolean;
@@ -51,7 +52,7 @@ export const ProfileImage = styled.img`
   object-fit: cover;
 `;
 
-export const DropdownMenu = styled.div<DropdownMenuProps>`
+export const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
   top: 80px;
   right: 0;
@@ -60,7 +61,7 @@ export const DropdownMenu = styled.div<DropdownMenuProps>`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 200px;
   padding: 10px;
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
   flex-direction: column;
 `;
 
@@ -90,6 +91,7 @@ export const UserName = styled.div`
   font-weight: bold;
 `;
 
+
 export const UserEmail = styled.div`
   font-size: 0.9rem;
   color: ${colors.dark};
@@ -98,4 +100,15 @@ export const UserEmail = styled.div`
 export const IconMenu = styled.img`
   width: 28px;
   height: 28px;
+`;
+
+export const LinkButton = styled(Link)`
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 8px;
+  font-size: 1rem;
+  color: ${colors.dark};
+  cursor: pointer;
+  text-decoration: none;
 `;
