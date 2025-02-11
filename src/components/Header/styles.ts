@@ -2,9 +2,6 @@ import styled from 'styled-components';
 import { colors } from '../../styles/colors';
 import { Link } from 'react-router-dom';
 
-interface DropdownMenuProps {
-    isOpen: boolean;
-  }
 export const HeaderContainer = styled.header`
   width: 100%;
   background-color: ${colors.light};

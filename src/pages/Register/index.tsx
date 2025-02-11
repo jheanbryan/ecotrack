@@ -15,8 +15,6 @@ import {
   InputIcon,
   Label,
   MainContainer,
-  SocialIcon,
-  SocialLoginContainer,
   IconEye
 } from "./styles";
 
@@ -24,8 +22,8 @@ import registerImg from '../../assets/icons/login.png';
 import emailIcon from '../../assets/icons/email.png';
 import passwordIcon from '../../assets/icons/password.png';
 import userIcon from '../../assets/icons/user.png';
-import googleIcon from '../../assets/icons/google.png';
-import githubIcon from '../../assets/icons/github.png';
+//import googleIcon from '../../assets/icons/google.png';
+//import githubIcon from '../../assets/icons/github.png';
 import closedEyeIcon from '../../assets/icons/closedEye.png';
 import openEyeIcon from '../../assets/icons/openEye.png';
 
