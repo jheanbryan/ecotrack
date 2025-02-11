@@ -1,61 +1,74 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../Config/firebase";
-import { MainContainer, DashboardCard, FlexRow, Title, ChartContainer, TipsContainer } from "./styles";
-import { signOut } from "firebase/auth";
+import { MainContainer, DashboardCard, FlexRow, Title, ChartContainer } from "./styles";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 import Header from "../../components/Header";
+import { UserContext } from "../../Context/UserContext"; 
 
-const mockData = [
-  { day: "Seg", consumo: 3.2 },
-  { day: "Ter", consumo: 2.8 },
-  { day: "Qua", consumo: 3.5 },
-  { day: "Qui", consumo: 3.0 },
-  { day: "Sex", consumo: 3.8 },
-  { day: "Sáb", consumo: 4.1 },
-  { day: "Dom", consumo: 3.7 }
-];
-
+interface ConsumptionType {
+  day: string; 
+  consumo: number; 
+}
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [username, setUserName] = useState('');
-  
+  const [data, setData] = useState<ConsumptionType[]>([]); 
+
+  const { consumption, name: userName } = useContext(UserContext);
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-    console.log(currentUser?.displayName)
-    setUserName(currentUser?.displayName || 'Usuário');
       if (!currentUser) {
         navigate("/");
       }
     });
+
+    
+    const formattedConsumption = consumption.map((item: any) => ({
+      day: item.day, 
+      consumo: item.consumo,
+    }));
+
+    setData(formattedConsumption); 
+
     return () => unsubscribe();
-  }, [navigate]);
+  }, [navigate, consumption]);
+
+  if (data.length === 0) {
+    return (
+      <>
+        <Header />
+        <MainContainer>
+          <Title>Bem-vindo, {userName}!</Title>
+          <p>Você ainda não cadastrou seu consumo semanal. Por favor, registre seus dados.</p>
+        </MainContainer>
+      </>
+    );
+  }
 
   return (
     <>
-    <Header />
-    <MainContainer>
-      <Title>Bem-vindo, {username}!</Title>
-      
-      <FlexRow>
-        <DashboardCard>
-          <h3>Seu consumo semanal</h3>
-          <ChartContainer>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={mockData}>
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
-                <CartesianGrid stroke="#ccc" />
-                <Line type="monotone" dataKey="consumo" stroke="#4CAF50" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </DashboardCard>
-      </FlexRow>
-    </MainContainer>
+      <Header />
+      <MainContainer>
+        <Title>Bem-vindo, {userName}!</Title>
+        <FlexRow>
+          <DashboardCard>
+            <h3>Seu consumo semanal</h3>
+            <ChartContainer>
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={data}>
+                  <XAxis dataKey="day" />
+                  <YAxis />
+                  <Tooltip />
+                  <CartesianGrid stroke="#ccc" />
+                  <Line type="monotone" dataKey="consumo" stroke="#4CAF50" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </DashboardCard>
+        </FlexRow>
+      </MainContainer>
     </>
   );
 };

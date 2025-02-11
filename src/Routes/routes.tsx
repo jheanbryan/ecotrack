@@ -6,6 +6,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import UserProfile from "../pages/Profile";
 import Register from "../pages/Register";
 import Logout from "../pages/Logout";
+import Tipes from "../pages/Tipes";
 
 export const routes: RouteObject[] = [
   {
@@ -33,6 +34,14 @@ export const routes: RouteObject[] = [
     element: (
       <ProtectedRoute>
         <UserProfile />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/tipes",
+    element: (
+      <ProtectedRoute>
+        <Tipes />
       </ProtectedRoute>
     ),
   },
