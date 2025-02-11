@@ -143,6 +143,7 @@ const Register = () => {
       <FlexCollCenter>
         <span>Ou cadastre-se com:</span>
 
+        {/* 
         <SocialLoginContainer>
           <DivImg>
             <SocialIcon src={googleIcon} alt="Google" />
@@ -151,6 +152,7 @@ const Register = () => {
             <SocialIcon src={githubIcon} alt="Github" />
           </DivImg>
         </SocialLoginContainer>
+        */}
 
         <div>
           Já tem uma conta?
