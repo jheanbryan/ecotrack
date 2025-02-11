@@ -1,50 +1,40 @@
-# React + TypeScript + Vite
+# EcoTrack
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**EcoTrack** é uma plataforma web focada em promover práticas sustentáveis, permitindo que os usuários rastreiem suas ações ecológicas e ajudem a proteger o meio ambiente.
 
-Currently, two official plugins are available:
+- depoy: https://ecotrack-seven.vercel.app
+- figma: https://www.figma.com/proto/siNh2z6CR9J9SkWIt0k6qJ/EcoTrack?node-id=6-100&t=yeWX6xfWCm4cfJRS-1
+<br>
+(Figma usado apenas para template, mudei grande parte da estilização que foi pensada inicialmente)
+## Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Cadastro e Login**: Usuários podem criar contas e fazer login para acessar a plataforma.
+- **Ações Sustentáveis**: O usuário pode registrar suas atividades ecológicas, como reciclagem, uso de transporte sustentável e redução de consumo de energia.
+- **Visualização de Progresso**: O site oferece visualização das ações realizadas, com métricas e indicadores sobre o impacto ecológico.
+- **Tema Claro/Escuro**: O site conta com a funcionalidade de alternar entre temas claro e escuro, proporcionando uma experiência personalizada para os usuários.
 
-## Expanding the ESLint configuration
+## Tecnologias Usadas
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **React**: Biblioteca JavaScript para construção da interface de usuário.
+- **TypeScript**: Linguagem que traz tipagem estática para o JavaScript, garantindo mais segurança no código.
+- **CSS**: Estilização da aplicação, com foco em uma interface limpa e agradável.
+- **react-router-dom**: Gerenciamento de rotas para navegação entre as páginas.
+- **Context API**: Para gerenciar o estado global do usuário e de suas ações.
 
-- Configure the top-level `parserOptions` property like this:
+## Como Usar
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+1. **Instale as dependências**:
+   ```bash
+   npm install
+   ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. **Configure o Ambiente**:
+   Crie um arquivo `.env` e adicione suas variáveis de ambiente necessárias, como URLs de API e outras configurações.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+3. **Inicie o Projeto**:
+   Execute o comando abaixo para iniciar a aplicação localmente:
+   ```bash
+   npm run dev
+   ```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+
