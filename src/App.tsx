@@ -1,5 +1,5 @@
 import { useRoutes } from "react-router-dom";
-import { routes } from "./routes/routes";
+import { routes } from "./Routes/routes";
 import { UserContextProvider } from "./Context/UserContext";
 
 const App = () => {

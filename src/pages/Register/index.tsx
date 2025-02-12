@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { auth, store } from "../../Config/firebase";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { updateProfile } from "firebase/auth";
@@ -15,7 +15,9 @@ import {
   InputIcon,
   Label,
   MainContainer,
-  IconEye
+  IconEye,
+  LinkText,
+  DivLine
 } from "./styles";
 
 import registerImg from '../../assets/icons/login.png';
@@ -78,6 +80,7 @@ const Register = () => {
   if (loading) return <p>Carregando...</p>;
 
   return (
+    <>
     <MainContainer>
       <FlexCollCenter>
         <DivImg>
@@ -139,9 +142,9 @@ const Register = () => {
       </FlexCollCenter>
 
       <FlexCollCenter>
-        <span>Ou cadastre-se com:</span>
 
         {/* 
+        <span>Ou cadastre-se com:</span>
         <SocialLoginContainer>
           <DivImg>
             <SocialIcon src={googleIcon} alt="Google" />
@@ -152,12 +155,15 @@ const Register = () => {
         </SocialLoginContainer>
         */}
 
-        <div>
-          Já tem uma conta?
-          <Link to='/login'>Entre aqui</Link>
-        </div>
+        <DivLine>
+          <p>
+            Já tem uma conta?
+            <LinkText to='/login'>Entre aqui</LinkText>
+          </p>
+        </DivLine>
       </FlexCollCenter>
     </MainContainer>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { colors } from "../../styles/colors";
+import { Link } from "react-router-dom";
 
 export const MainContainer = styled.div`
     max-width: 400px;
@@ -136,5 +137,22 @@ export const SocialIcon = styled.img`
 
     &:hover {
         transform: scale(1.1);
+    }
+`;
+
+export const DivLine = styled.div`
+    display: flex;
+    gap: 5px;
+    width: 100%;
+
+`;
+
+export const LinkText  = styled(Link)`
+    text-decoration: none;
+    display: flex;
+    color: ${colors.primary};
+
+    &:hover{
+        text-decoration: underline;
     }
 `;

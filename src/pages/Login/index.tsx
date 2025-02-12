@@ -1,4 +1,4 @@
-import { Button, DivDescription, DivImg, DivInput, FlexCollCenter, ForgotPassword, IconEye, Img, Input, InputIcon, Label, MainContainer } from "./styles";
+import { Button, DivDescription, DivImg, DivInput, DivLine, FlexCollCenter, ForgotPassword, IconEye, Img, Input, InputIcon, Label, LinkText, MainContainer } from "./styles";
 import loginImg from '../../assets/icons/login.png'
 import emailIcon from '../../assets/icons/email.png'
 import passwordIcon from '../../assets/icons/password.png'
@@ -153,10 +153,13 @@ const Login = () => {
         </SocialLoginContainer>
         */}
 
-        <div>
-          Você não tem uma conta? 
-          <Link to='/register'>Crie uma conta aqui</Link>
-        </div>
+        <DivLine>
+          <p>
+            Você não tem uma conta?  
+            <LinkText to='/register'>Crie uma conta aqui</LinkText>
+          </p>
+        </DivLine>
+        
       </FlexCollCenter>
     </MainContainer>
   );
