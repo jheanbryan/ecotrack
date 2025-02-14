@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, store } from "../../Config/firebase";
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { useCreateUserWithEmailAndPassword, useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import {
@@ -24,35 +24,32 @@ import registerImg from '../../assets/icons/login.png';
 import emailIcon from '../../assets/icons/email.png';
 import passwordIcon from '../../assets/icons/password.png';
 import userIcon from '../../assets/icons/user.png';
-//import googleIcon from '../../assets/icons/google.png';
-//import githubIcon from '../../assets/icons/github.png';
 import closedEyeIcon from '../../assets/icons/closedEye.png';
 import openEyeIcon from '../../assets/icons/openEye.png';
+import { UserContext } from "../../Context/UserContext";
 
 const Register = () => {
-  const [name, setName] = useState(''); // Estado para armazenar o nome
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate(); 
+  const { isSessionValid } = useContext(UserContext);
 
-  const [
-    createUserWithEmailAndPassword,
-    loading,
-  ] = useCreateUserWithEmailAndPassword(auth);
+  const [createUserWithEmailAndPassword, loading] = useCreateUserWithEmailAndPassword(auth);
+  const [signInWithEmailAndPassword, loginLoading] = useSignInWithEmailAndPassword(auth);
 
   const handleSignUp = async (e: any) => {
     e.preventDefault();
     try {
       const userCredential = await createUserWithEmailAndPassword(email, password);
-  
+      
       if (!userCredential || !userCredential.user) {
         console.error("Erro: Usuário não foi criado.");
         return;
       }
   
       const user = userCredential.user;
-  
       await updateProfile(user, { displayName: name });
   
       await setDoc(doc(store, "users", user.uid), {
@@ -62,25 +59,37 @@ const Register = () => {
         cep: null,
         address: null,
         photo: null,
-        consumption: {},
+        consumption: [],
         createdAt: new Date(),
       });
   
+      console.log("Usuário criado com sucesso! Logando agora...");
+  
+      const loginResult = await signInWithEmailAndPassword(email, password);
+      console.log(loginResult);
+
+      if (!loginResult || !loginResult.user) {
+        console.error("Erro ao logar.");
+        return;
+      }
+
+      console.log("Auth Current User:", auth.currentUser);
+      console.log("Is session valid?", isSessionValid());
+
       navigate("/home");
+  
     } catch (error) {
-      console.error("Erro ao criar conta:", error);
+      console.error("Erro ao criar conta e logar:", error);
     }
   };
   
-
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
-  if (loading) return <p>Carregando...</p>;
+  if (loading || loginLoading) return <p>Carregando...</p>;
 
   return (
-    <>
     <MainContainer>
       <FlexCollCenter>
         <DivImg>
@@ -96,74 +105,65 @@ const Register = () => {
       </FlexCollCenter>
 
       <FlexCollCenter>
-        <Label htmlFor="name">Nome</Label>
-        <DivInput>
-          <Input 
-            type="text" 
-            placeholder="Nome" 
-            name="name" 
-            required 
-            onChange={e => setName(e.target.value)} 
-          />
-          <InputIcon src={userIcon} alt="User Icon" />
-        </DivInput>
+        <form onSubmit={handleSignUp}>
+          <Label htmlFor="name">Nome</Label>
+          <DivInput>
+            <Input 
+              type="text" 
+              placeholder="Nome" 
+              name="name" 
+              required 
+              value={name}
+              onChange={e => setName(e.target.value)} 
+            />
+            <InputIcon src={userIcon} alt="User Icon" />
+          </DivInput>
 
-        <Label htmlFor="email">Email</Label>
-        <DivInput>
-          <Input 
-            type="email" 
-            placeholder="Email" 
-            name="email" 
-            required 
-            onChange={e => setEmail(e.target.value)} 
-          />
-          <InputIcon src={emailIcon} alt="Email Icon" />
-        </DivInput>
+          <Label htmlFor="email">Email</Label>
+          <DivInput>
+            <Input 
+              type="email" 
+              placeholder="Email" 
+              name="email" 
+              required 
+              value={email}
+              onChange={e => setEmail(e.target.value)} 
+            />
+            <InputIcon src={emailIcon} alt="Email Icon" />
+          </DivInput>
 
-        <Label htmlFor="password">Senha</Label>
-        <DivInput>
-          <Input
-            type={showPassword ? "text" : "password"}
-            placeholder="Senha"
-            name="password"
-            required
-            onChange={e => setPassword(e.target.value)}
-          />
-          <InputIcon src={passwordIcon} alt="Password Icon" />
-          <IconEye
-            src={showPassword ? openEyeIcon : closedEyeIcon}
-            alt="Toggle password visibility"
-            onClick={togglePasswordVisibility}
-            style={{ cursor: "pointer" }} 
-          />
-        </DivInput>
+          <Label htmlFor="password">Senha</Label>
+          <DivInput>
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Senha"
+              name="password"
+              required
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+            <InputIcon src={passwordIcon} alt="Password Icon" />
+            <IconEye
+              src={showPassword ? openEyeIcon : closedEyeIcon}
+              alt="Toggle password visibility"
+              onClick={togglePasswordVisibility}
+              style={{ cursor: "pointer" }} 
+            />
+          </DivInput>
 
-        <Button onClick={handleSignUp}>Cadastrar</Button>
+          <Button type="submit" disabled={loading || loginLoading}>Cadastrar</Button>
+        </form>
       </FlexCollCenter>
 
       <FlexCollCenter>
-
-        {/* 
-        <span>Ou cadastre-se com:</span>
-        <SocialLoginContainer>
-          <DivImg>
-            <SocialIcon src={googleIcon} alt="Google" />
-          </DivImg>
-          <DivImg>
-            <SocialIcon src={githubIcon} alt="Github" />
-          </DivImg>
-        </SocialLoginContainer>
-        */}
-
         <DivLine>
           <p>
-            Já tem uma conta?
-            <LinkText to='/login'>Entre aqui</LinkText>
+            Já tem uma conta?  
+            <LinkText to='/login'>Faça login aqui</LinkText>
           </p>
         </DivLine>
       </FlexCollCenter>
     </MainContainer>
-    </>
   );
 };
 

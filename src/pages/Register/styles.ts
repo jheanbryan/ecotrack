@@ -24,6 +24,13 @@ export const FlexCollCenter = styled.div`
     align-items: center;
     width: 100%;
     gap: 0.5rem;
+
+    form{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
 `;
 
 export const DivImg = styled.div`

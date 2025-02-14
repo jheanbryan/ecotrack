@@ -25,6 +25,73 @@ interface Consumption {
   date: string;
 }
 
+interface ImageUploadComponentProps {
+  photo: string;
+  setPhoto: (url: string) => void;
+}
+
+const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({ photo, setPhoto }) => {
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const storage = getStorage();
+
+  const handleUploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      console.error("Usuário não autenticado!");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const storageRef = ref(storage, `users/${currentUser?.uid}/profile.jpg`);
+
+      await uploadBytes(storageRef, file);
+      console.log("Imagem carregada com sucesso!");
+
+      const downloadURL = await getDownloadURL(storageRef);
+      setPhoto(downloadURL);
+
+      const userRef = doc(store, "users", currentUser.uid);
+      await updateDoc(userRef, {
+        photo: downloadURL,
+      });
+      console.log("Foto de perfil atualizada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao fazer upload da imagem:", error);
+      alert("Erro ao fazer upload da imagem");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return (
+    <>
+      <DivImg>
+        <Img src={photo} alt="Imagem do usuário" />
+      </DivImg>
+
+      <Button 
+        onClick={() => document.getElementById('upload-image')?.click()}
+        disabled={isUploading}
+      >
+        {isUploading ? 'Enviando...' : 'Editar Imagem'}
+      </Button>
+      
+      <input
+        type="file"
+        id="upload-image"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handleUploadImage}
+      />
+    </>
+  );
+};
+
 const UserProfile = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,8 +104,6 @@ const UserProfile = () => {
   const [quantity, setQuantity] = useState("");
   const [date, setDate] = useState("");
   const [consumptions, setConsumptions] = useState<Consumption[]>([]);
-
-  const storage = getStorage(); // Instância do Firebase Storage
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -54,7 +119,6 @@ const UserProfile = () => {
           setEmail(userData.email || currentUser.email);
           setCep(userData.cep || "");
           setAddress(userData.address || "");
-
           setPhoto(userData.photo || userImageNoImage);
           setConsumptions(userData.consumption || []);
         } else {
@@ -106,36 +170,7 @@ const UserProfile = () => {
     }
   };
 
-  const handleUploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-      console.error("Usuário não autenticado!");
-      return;
-    }
-
-    try {
-      const storageRef = ref(storage, `users/${currentUser?.uid}/profile.jpg`);
-
-      await uploadBytes(storageRef, file);
-      console.log("Imagem carregada com sucesso!");
-
-      const downloadURL = await getDownloadURL(storageRef);
-      setPhoto(downloadURL); //foto no estado
-
-      const userRef = doc(store, "users", currentUser.uid);
-      await updateDoc(userRef, {
-        photo: downloadURL,
-      });
-      console.log("Foto de perfil atualizada com sucesso!");
-    } catch (error) {
-      console.error("Erro ao fazer upload da imagem:", error);
-    }
-  };
-
-  const renderIcon = (type: any) => {
+  const renderIcon = (type: string) => {
     switch (type) {
       case "agua":
         return "💧"; 
@@ -154,9 +189,8 @@ const UserProfile = () => {
       <MainContainer>
         <CardUserProfile>
           <h3>Perfil de usuário</h3>
-          <DivImg>
-            <Img src={photo} alt="Imagem do usuário" />
-          </DivImg>
+          <ImageUploadComponent photo={photo} setPhoto={setPhoto} />
+          
           <InputsContainer>
             <label>Nome:</label>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)} readOnly={!isEditing} />
@@ -172,15 +206,6 @@ const UserProfile = () => {
               <button onClick={() => setIsEditing(true)}>Editar</button>
             )}
           </InputsContainer>
-
-       
-          <Button onClick={() => document.getElementById('upload-image')?.click()}>Editar Imagem</Button>
-          <input
-            type="file"
-            id="upload-image"
-            style={{ display: 'none' }}
-            onChange={handleUploadImage}
-          />
         </CardUserProfile>
 
         <ConsumptionContainer>
@@ -188,7 +213,7 @@ const UserProfile = () => {
           <button onClick={() => setIsModalOpen(true)}>Novo Consumo</button>
 
           <ContainerCardsConsumption>
-            {consumptions.map((consumption: any, index) => (
+            {consumptions.map((consumption, index) => (
               <Card key={index}>
                 <h4>{renderIcon(consumption.type)} {consumption.type}</h4>
                 <p>{consumption.quantity} {consumption.unit}</p>

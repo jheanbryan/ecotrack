@@ -16,15 +16,17 @@ const Dashboard = () => {
   const [data, setData] = useState<ConsumptionType[]>([]); 
 
   const { consumption, name: userName } = useContext(UserContext);
+  console.log(consumption);
 
   useEffect(() => {
+    console.log("useEffect foi executado!");
+
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (!currentUser) {
         navigate("/");
       }
     });
 
-    
     const formattedConsumption = consumption.map((item: any) => ({
       day: item.day, 
       consumo: item.consumo,
