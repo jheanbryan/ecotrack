@@ -2,20 +2,19 @@ import { useEffect, useState, useContext } from "react";
 //import { useNavigate } from "react-router-dom";
 import { auth } from "../../Config/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { store } from "../../Config/firebase"; // Certifique-se de importar corretamente
+import { store } from "../../Config/firebase"; 
 import {
   MainContainer,
   DashboardCard,
   Title,
-  ChartContainer,
   FlexCol,
+  ChartContainerStyled,
 } from "./styles";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
-  Tooltip,
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
@@ -48,7 +47,7 @@ const Dashboard = () => {
           const consumptionData = userData.consumption || [];
 
           const formattedConsumption = consumptionData.map((item: any) => ({
-            day: item.date,
+            day: new Date(item.date).toLocaleDateString('pt-BR'),
             consumo: Number(item.quantity),
             type: item.type,
             unit: item.unit,
@@ -93,34 +92,39 @@ const Dashboard = () => {
       <MainContainer>
         <Title>Bem-vindo, {userName}!</Title>
         <FlexCol>
-          {Object.keys(groupedData).map((type) => (
-            <DashboardCard key={type}>
-              <h3>Consumo de {type}</h3>
+          {Object.keys(groupedData).map((type) => {
+            const unit = groupedData[type][0].unit;
 
-              <ChartContainer>
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={groupedData[type]}>
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <Tooltip />
-                    <CartesianGrid stroke="#ccc" />
-                    <Line
-                      type="monotone"
-                      dataKey="consumo"
-                      stroke={
-                        type === "energia"
-                          ? "#FF5733"
-                          : type === "agua"
-                          ? "#3498DB"
-                          : "#2ECC71"
-                      }
-                      strokeWidth={1}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </DashboardCard>
-          ))}
+            return (
+              <DashboardCard key={type}>
+                <h3>Consumo de {type} - {unit}</h3>
+
+                <ChartContainerStyled>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart
+                      data={groupedData[type]}
+                      margin={{ left: 0, right: 5, top: 20, bottom: 20 }}
+                    >
+                      <XAxis dataKey="day" />
+                      <YAxis />
+                      <CartesianGrid />
+                      <Bar
+                        dataKey="consumo"
+                        fill={
+                          type === "energia"
+                            ? "#FF5733"
+                            : type === "agua"
+                            ? "#3498DB"
+                            : "#2ECC71"
+                        }
+                        barSize={20}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainerStyled>
+              </DashboardCard>
+            );
+          })}
         </FlexCol>
       </MainContainer>
     </>

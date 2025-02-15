@@ -80,20 +80,6 @@ const Login = () => {
 
     
       <FlexCollCenter>
-      {/*
-        <span>Ou entre com:</span>
-
-        <SocialLoginContainer>
-          <DivImg>
-            <SocialIcon src={googleIcon} alt="Google" />
-          </DivImg>
-
-          <DivImg>
-            <SocialIcon src={githubIcon} alt="Github" />
-          </DivImg>
-        </SocialLoginContainer>
-        */}
-
         <DivLine>
           <p>
             Você não tem uma conta?  

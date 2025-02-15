@@ -23,6 +23,10 @@ export const FlexCol = styled.div`
   flex-direction: column;
   gap: 20px;
   margin-bottom: 20px;
+  width: 100%;
+  max-width: 800px;
+  align-items: center;
+  padding: 5px;
 `;
 
 export const DashboardCard = styled.div`
@@ -30,7 +34,7 @@ export const DashboardCard = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  width: 300px;
+  width: 100%;
   text-align: center;
 
   h3 {
@@ -72,3 +76,24 @@ export const TipsContainer = styled.div`
   }
 `;
 
+
+export const ChartContainerStyled = styled.div`
+  .recharts-wrapper {
+    padding: 0px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    font-size: 0.8rem;
+  }
+  .BarChart {
+    left: 20, 
+  }
+  .recharts-cartesian-axis line,
+  .recharts-cartesian-grid line {
+    stroke: gray; 
+  }
+
+  .recharts-bar-rectangular {
+    transition: fill 0.3s ease; 
+  }
+
+`;
