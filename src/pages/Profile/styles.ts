@@ -153,11 +153,11 @@ export const Overlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.65); /* Mantém o fundo escuro e com opacidade */
+  background: rgba(0, 0, 0, 0.65); 
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999; /* Garantir que o overlay fique sobre os outros elementos */
+  z-index: 999; 
 `;
 
 
@@ -174,11 +174,11 @@ export const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background-color: ${colors.light}; /* Defina uma cor de fundo mais clara ou sólida */
+  background-color: ${colors.light}; 
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombras mais suaves */
-  z-index: 1000; /* Colocar o modal acima do overlay */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  z-index: 1000; 
 
   select, input {
     padding: 10px;
@@ -187,7 +187,8 @@ export const ModalContent = styled.div`
     font-size: 1rem;
   }
 
-  button {
+  
+  Button {
     padding: 12px;
     margin: 6px;
     border: none;
@@ -198,8 +199,31 @@ export const ModalContent = styled.div`
     background: #4caf50;
     color: white;
   }
-
   button:last-child {
     background: #d9534f;
+  }
+`;
+
+export const RemoveButton = styled.button`
+  padding: 6px 10px; 
+  background-color: #d9534f !important; //abordagem provisória 
+  color: ${colors.light}; 
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem; 
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: ${colors.primary}; 
+  }
+
+  svg { 
+    width: 16px;
+    height: 16px;
+    fill: ${colors.light};
   }
 `;

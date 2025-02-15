@@ -12,7 +12,8 @@ import {
   InputsContainer,
   MainContainer,
   Overlay,
-  ModalContent
+  ModalContent,
+  RemoveButton
 } from "./styles";
 import userImageNoImage from '../../assets/noimage.png'; 
 import Header from "../../components/Header";
@@ -170,6 +171,34 @@ const UserProfile = () => {
     }
   };
 
+  const handleRemoveConsumption = async (index: number) => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      console.error("Usuário não autenticado!");
+      return;
+    }
+
+    const userRef = doc(store, "users", currentUser.uid);
+    try {
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        const existingConsumptions = Array.isArray(userData.consumption) ? userData.consumption : [];
+
+        const updatedConsumptions = existingConsumptions.filter((_, i) => i !== index);
+
+        await updateDoc(userRef, {
+          consumption: updatedConsumptions,
+        });
+
+        setConsumptions(updatedConsumptions);
+        alert("Consumo removido com sucesso!");
+      }
+    } catch (error) {
+      console.error("Erro ao remover o consumo:", error);
+    }
+  };
+
   const renderIcon = (type: string) => {
     switch (type) {
       case "agua":
@@ -218,6 +247,7 @@ const UserProfile = () => {
                 <h4>{renderIcon(consumption.type)} {consumption.type}</h4>
                 <p>{consumption.quantity} {consumption.unit}</p>
                 <p>{consumption.date}</p>
+                <RemoveButton onClick={() => handleRemoveConsumption(index)}>Remover</RemoveButton>
               </Card>
             ))}
           </ContainerCardsConsumption>
@@ -242,7 +272,7 @@ const UserProfile = () => {
             <label>Data:</label>
             <input type="date" onChange={(e) => setDate(e.target.value)} />
 
-            <button onClick={handleSaveConsumption}>Salvar</button>
+            <button onClick={handleSaveConsumption}>Salvar Consumo</button>
             <button onClick={() => setIsModalOpen(false)}>Cancelar</button>
           </ModalContent>
         </Overlay>
@@ -251,4 +281,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile; 
+export default UserProfile;
