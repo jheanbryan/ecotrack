@@ -160,7 +160,7 @@ const UserProfile = () => {
         await updateDoc(userRef, {
           consumption: [...existingConsumption, newConsumption],
         });
-
+        
         alert("Consumo salvo com sucesso!");
         setIsModalOpen(false);
         setConsumptions([...existingConsumption, newConsumption]);
@@ -251,4 +251,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default UserProfile; 

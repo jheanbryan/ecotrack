@@ -1,41 +1,76 @@
 import { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import { auth } from "../../Config/firebase";
-import { MainContainer, DashboardCard, FlexRow, Title, ChartContainer } from "./styles";
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+import { doc, getDoc } from "firebase/firestore";
+import { store } from "../../Config/firebase"; // Certifique-se de importar corretamente
+import {
+  MainContainer,
+  DashboardCard,
+  Title,
+  ChartContainer,
+  FlexCol,
+} from "./styles";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 import Header from "../../components/Header";
-import { UserContext } from "../../Context/UserContext"; 
+import { UserContext } from "../../Context/UserContext";
 
 interface ConsumptionType {
-  day: string; 
-  consumo: number; 
+  day: string;
+  consumo: number;
+  type: string;
+  unit: string;
 }
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const [data, setData] = useState<ConsumptionType[]>([]); 
+  //const navigate = useNavigate();
+  const [data, setData] = useState<ConsumptionType[]>([]);
 
-  const { consumption, name: userName } = useContext(UserContext);
-  console.log(consumption);
+  const { name: userName } = useContext(UserContext);
 
   useEffect(() => {
-    console.log("useEffect foi executado!");
+    const fetchConsumption = async () => {
+      if (!auth.currentUser) return;
 
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      if (!currentUser) {
-        navigate("/");
+      const userRef = doc(store, "users", auth.currentUser.uid);
+
+      try {
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          const consumptionData = userData.consumption || [];
+
+          const formattedConsumption = consumptionData.map((item: any) => ({
+            day: item.date,
+            consumo: Number(item.quantity),
+            type: item.type,
+            unit: item.unit,
+          }));
+
+          setData(formattedConsumption);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar consumo:", error);
       }
-    });
+    };
 
-    const formattedConsumption = consumption.map((item: any) => ({
-      day: item.day, 
-      consumo: item.consumo,
-    }));
+    fetchConsumption();
+  }, []);
 
-    setData(formattedConsumption); 
-
-    return () => unsubscribe();
-  }, [navigate, consumption]);
+  const groupedData = data.reduce((acc, item) => {
+    if (!acc[item.type]) {
+      acc[item.type] = [];
+    }
+    acc[item.type].push(item);
+    return acc;
+  }, {} as Record<string, ConsumptionType[]>);
 
   if (data.length === 0) {
     return (
@@ -43,7 +78,10 @@ const Dashboard = () => {
         <Header />
         <MainContainer>
           <Title>Bem-vindo, {userName}!</Title>
-          <p>Você ainda não cadastrou seu consumo semanal. Por favor, registre seus dados.</p>
+          <p>
+            Você ainda não cadastrou seu consumo semanal. Por favor, registre
+            seus dados.
+          </p>
         </MainContainer>
       </>
     );
@@ -54,22 +92,36 @@ const Dashboard = () => {
       <Header />
       <MainContainer>
         <Title>Bem-vindo, {userName}!</Title>
-        <FlexRow>
-          <DashboardCard>
-            <h3>Seu consumo semanal</h3>
-            <ChartContainer>
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={data}>
-                  <XAxis dataKey="day" />
-                  <YAxis />
-                  <Tooltip />
-                  <CartesianGrid stroke="#ccc" />
-                  <Line type="monotone" dataKey="consumo" stroke="#4CAF50" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </DashboardCard>
-        </FlexRow>
+        <FlexCol>
+          {Object.keys(groupedData).map((type) => (
+            <DashboardCard key={type}>
+              <h3>Consumo de {type}</h3>
+
+              <ChartContainer>
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={groupedData[type]}>
+                    <XAxis dataKey="day" />
+                    <YAxis />
+                    <Tooltip />
+                    <CartesianGrid stroke="#ccc" />
+                    <Line
+                      type="monotone"
+                      dataKey="consumo"
+                      stroke={
+                        type === "energia"
+                          ? "#FF5733"
+                          : type === "agua"
+                          ? "#3498DB"
+                          : "#2ECC71"
+                      }
+                      strokeWidth={1}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </DashboardCard>
+          ))}
+        </FlexCol>
       </MainContainer>
     </>
   );

@@ -17,9 +17,10 @@ export const Title = styled.h1`
   margin-bottom: 20px;
 `;
 
-export const FlexRow = styled.div`
+export const FlexCol = styled.div`
   display: flex;
   justify-content: center;
+  flex-direction: column;
   gap: 20px;
   margin-bottom: 20px;
 `;
